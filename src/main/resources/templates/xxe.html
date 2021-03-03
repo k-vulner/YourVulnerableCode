@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>xxetest</title>
+    <script src="./js/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#submit_xxe").click(function(){
+                $.ajax({
+                    type: 'POST',
+                    url:"/xxe_deal?xxe_way="+$('input[name=xxe_way]:checked').val(),
+                    data:"<?xml version=\"1.0\"?>" +
+                        "<AAA>"+
+                        "<aaa>"+$("#xxe_input").val()+"</aaa>"+
+                        "</AAA>",
+                    contentType:"text/xml",
+                    dataType: "xml",
+                    cache: false,
+                    error: function() { alert("No data found."); },
+                    success: function(xml) {
+                        alert($(xml).find("project")[0].attr("id"));
+
+                    }});
+            });
+        });
+
+    </script>
+</head>
+<body>
+<textarea id="xxe_input"></textarea>
+<br>
+<input type="radio" name="xxe_way" value="jaxb" checked="checked"/>javax.xml.bind.Unmarshaller解析
+<input type="radio" name="xxe_way" value="dom4j"  />org.dom4j.io.SAXReader解析
+<input type="radio" name="xxe_way" value="dom" />javax.xml.parsers
+<input type="radio" name="xxe_way" value="jdom2" />org.jdom2.input.SAXBuilder
+<input type="radio" name="xxe_way" value="sax" />javax.xml.parsers.SAXParser
+<br>
+<button id="submit_xxe">提交</button>
+<br>
+<p id="result_xxe"></p>
+</body>
+</html>

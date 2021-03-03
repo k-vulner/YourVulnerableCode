@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <title>sqltest</title>
+    <script src="./js/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function(){
+            $("#submit_sql").click(function(){
+                $.ajax({
+                    type: 'POST',
+                    url:"/sql_deal?sql_way="+$('input[name=sql_way]:checked').val(),
+                    data:
+                        "sql="+$("#sql_input").val(),
+                    cache: false,
+                    error: function() {
+                        console.log("sql is failed");
+                        $("#result_sql").html("sql is failed"); },
+                    success: function(data) {
+                        console.log("sql is success");
+                        $("#result_sql").html(data);
+                    }});
+            });
+        });
+
+    </script>
+</head>
+<body>
+<p>sql语句是：select * from t_user where name='[你的输入]'</p>
+<br>
+<p>测试使用的payload是 a' or '1'='1 注入成功将具有回显</p>
+<br>
+<textarea id="sql_input"></textarea>
+<br>
+<input type="radio" name="sql_way" value="jdbc" checked="checked"/>jdbc解析
+<input type="radio" name="sql_way" value="mybatis"  />mybatis解析
+<input type="radio" name="sql_way" value="ibatis"  />ibatis解析
+<input type="radio" name="sql_way" value="hibernate" />hibernate解析
+<input type="radio" name="sql_way" value="jpa"  />jpa解析
+
+<br>
+<button id="submit_sql">提交</button>
+<br>
+<p id="result_sql"></p>
+</body>
+</html>
