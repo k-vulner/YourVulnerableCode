@@ -5,7 +5,7 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-//下面这个注解是配置mybatis下mapper方式的sql语句的配置类们在哪，或者直接在 Mapper 类上面添加注解@Mapper
+//下面这个注解是配置mybatis下mapper方式的sql语句的配置类们在哪，或者直接在 Mapper 类上面添加注解@Mapper，XML的方式也得把那个接口放进去
 @MapperScan("com.learn.yourvulnerablecode.BO.mybatis_mapper")
 public class YourvulnerablecodeApplication {
 

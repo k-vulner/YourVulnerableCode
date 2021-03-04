@@ -1,6 +1,10 @@
 package com.learn.yourvulnerablecode.controller;
 
 import com.learn.yourvulnerablecode.BO.Sqli_JDBC;
+import com.learn.yourvulnerablecode.BO.mybatis_mapper.mybatisMapperXML;
+import com.learn.yourvulnerablecode.BO.mybatis_mapper.mybatisMapper;
+import com.learn.yourvulnerablecode.util.SQL_Class;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -10,11 +14,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import java.sql.*;
+import java.util.List;
 
 @Controller
 public class SqliController {
-
-
+    //mybatis ClassConfig的自动装配
+    @Autowired
+    mybatisMapper userMapper;
+    //mybatis XMLConfig的自动装配
+    @Autowired
+    mybatisMapperXML userMapperXML;
 
     @ResponseBody
     @RequestMapping("/sql")
@@ -52,15 +61,28 @@ public class SqliController {
                     //或者直接就查不到的就返回空
 
                     //漏洞版
-                    //ResultSet res=jdbc.vulnerable_select_2(request_sql);
+                    //ResultSet res=jdbc.vulnerable_jdbc_select_2(request_sql);
 
                     //
-                    ResultSet res=jdbc.unvulnerable_select_2(request_sql);
+                    ResultSet res=jdbc.unvulnerable_jdbc_select_2(request_sql);
                     result_sql=Sqli_JDBC.log_table(res);
                     break;
                 case "mybatis" :
-                    //这里用的是mybatis-spring-boot-starter，具有两种模式，一种是老派的xml，一种是注解方式
+                    List<SQL_Class> users=null;
+                    //参考https://www.cnblogs.com/ityouknow/p/6037431.html
+                    //https://github.com/ityouknow/spring-boot-examples/
+                    //这里用的是mybatis-spring-boot-starter，具有两种模式，一种是老派的xml，一种是注解方法
 
+                    //注解方式，需要在YourvulnerablecodeApplication里面配置注解配置类的位置或是在注解配置类加@Mapper，并且需要在使用的位置进行自动装配注解，也就是21 @Autowired，22行 mybatisMapper userMapper;
+                    //users=userMapper.vulnerable_mybatisClassConfig_select_1(request_sql);
+                    //users=userMapper.test_mybatisClassConfig_TableAndCol_1("t_user","name",request_sql);
+
+                    //xml方式，配置比较麻烦
+                    //users=userMapperXML.vulnerable_mybatisXMLConfig_select_1(request_sql);
+                    //users=userMapperXML.unvulnerable_mybatisXMLConfig_select_1(request_sql);
+                    //users=userMapperXML.unvulnerable_mybatisXMLConfig_testTableCol_1("t_user","name",request_sql);
+                    users=userMapperXML.unvulnerable_mybatisXMLConfig_blurryselect_1(request_sql);
+                    result_sql=users.toString();
                     break;
                 case "ibatis" :
 

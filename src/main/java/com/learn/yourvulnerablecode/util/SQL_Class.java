@@ -21,12 +21,12 @@ public class SQL_Class {
     public void setId(int id) {
         this.id = id;
     }
-
-    public SQL_Class(String name, String password, int age) {
-        this.name = name;
-        this.password = password;
-        this.age = age;
-    }
+//为啥一打开这个构造函数，自动装配就炸？？？
+//    public SQL_Class(String name, String password, int age) {
+//        this.name = name;
+//        this.password = password;
+//        this.age = age;
+//    }
 
     public void setName(String name) {
         this.name = name;

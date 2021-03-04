@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<!-- 下面这个mapper标签指向着自动装配提供调用方法得那个接口-->
+<mapper namespace="com.learn.yourvulnerablecode.BO.mybatis_mapper.mybatisMapperXML" >
+    <!--参考https://mybatis.org/mybatis-3/zh/configuration.html-->
+    <!-- 定义返回的结果集-->
+    <resultMap id="BaseResultMap" type="com.learn.yourvulnerablecode.util.SQL_Class" >
+        <id column="id" property="id" jdbcType="BIGINT" />
+        <result column="name" property="name" jdbcType="VARCHAR" />
+        <result column="password" property="password" jdbcType="VARCHAR" />
+        <result column="age" property="age" jdbcType="BIGINT"/>
+        <result column="sercet" property="sercet" jdbcType="VARCHAR" />
+    </resultMap>
+    <!-- 定义一个后面常用的字符串，比如这里的列名基本上每个都用上了-->
+    <sql id="Base_Column_List" >
+        id, name, password, age, sercet
+    </sql>
+
+    <select id="vulnerable_mybatisXMLConfig_select_1" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        SELECT
+        <!-- 引用上面的定义，相当于define的嘛-->
+        <include refid="Base_Column_List" />
+        FROM t_user WHERE name = '${name}'
+    </select>
+
+    <select id="unvulnerable_mybatisXMLConfig_select_1" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_user WHERE name = #{name}
+    </select>
+
+    <select id="unvulnerable_mybatisXMLConfig_blurryselect_1" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        FROM t_user WHERE name like concat('%', #{name}, '%')
+    </select>
+
+    <select id="unvulnerable_mybatisXMLConfig_testTableCol_1" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- FROM #{tablename} WHERE #{colname} = #{name} 会炸，还是老套路，表名列名不能预编译-->
+        FROM ${tablename} WHERE ${colname} = #{name}
+    </select>
+
+    <select id="vulnerable_mybatisXMLConfig_testTableCol_1" resultMap="BaseResultMap"  parameterType="java.lang.String">
+        SELECT
+        <include refid="Base_Column_List" />
+        <!-- <![CDATA[  这里面的内容 < > 都可以正常写，不用html编码]]> -->
+        FROM ${tablename} WHERE ${colname} = '${name}'
+    </select>
+
+
+
+    <insert id="unvulnerable_mybatisXMLConfig_insert_1" parameterType="com.learn.yourvulnerablecode.util.SQL_Class" >
+        INSERT INTO
+            t_user
+            (name,password,age,sercet)
+        VALUES
+            (#{name}, #{password}, #{age}, #{sercet})
+    </insert>
+
+    <update id="update" parameterType="com.learn.yourvulnerablecode.util.SQL_Class" >
+        UPDATE
+        t_user
+        SET
+        <if test="name != null">name = #{name},</if>
+        <if test="password != null">password = #{password},</if>
+        age = #{age}
+        WHERE
+        id = #{id}
+    </update>
+
+    <delete id="delete" parameterType="java.lang.Long" >
+        DELETE FROM
+            users
+        WHERE
+            id =#{id}
+    </delete>
+
+</mapper>

@@ -44,7 +44,7 @@ public  class Sqli_JDBC
     }
 
     //executeUpdate函数的漏洞版
-    public int vulnerable_select_1(String name) throws SQLException {
+    public int vulnerable_jdbc_select_1(String name) throws SQLException {
         String sql="select * from t_user where name='"+name+"' ";
         //executeUpdate主要本意用于执行 INSERT、UPDATE 或 DELETE 语句以及 SQL DDL（数据定义语言）语句。
         // INSERT、UPDATE 或 DELETE 语句的效果是修改表中零行或多行中的一列或多列。executeUpdate 的返回值是一个整数（int），指示受影响的行数（即更新计数）。
@@ -56,7 +56,7 @@ public  class Sqli_JDBC
     }
 
     //executeQuery函数的漏洞版，这个
-    public ResultSet vulnerable_select_2(String name) throws SQLException {
+    public ResultSet vulnerable_jdbc_select_2(String name) throws SQLException {
         String sql="select * from t_user where name='"+name+"' ";
         //用于产生单个结果集（ResultSet）的语句
         System.out.println(sql);
@@ -66,7 +66,7 @@ public  class Sqli_JDBC
     }
 
     //execute函数的漏洞版
-    public boolean vulnerable_select_3(String name) throws SQLException {
+    public boolean vulnerable_jdbc_select_3(String name) throws SQLException {
         String sql="select * from t_user where name='"+name+"' ";
         //可用于执行任何SQL语句，返回一个boolean值，表明执行该SQL语句是否返回了ResultSet。
         // 如果执行后第一个结果是ResultSet，则返回true，否则返回false。
@@ -110,7 +110,7 @@ public  class Sqli_JDBC
     }
 
     //错误使用PreparedStatement
-    public ResultSet vulnerable_select_4(String name) throws SQLException {
+    public ResultSet vulnerable_jdbc_select_4(String name) throws SQLException {
         pstmt = conn.prepareStatement("");    //或者直接在这里拼接
         if(pstmt.execute("select * from t_user where name='"+name+"'")){
             ResultSet res=pstmt.getResultSet();
@@ -122,7 +122,7 @@ public  class Sqli_JDBC
     }
 
     //使用PreparedStatement来进行预编译查询
-    public ResultSet unvulnerable_select_2(String name) throws SQLException {
+    public ResultSet unvulnerable_jdbc_select_2(String name) throws SQLException {
         String SQL = "select * from t_user where name= ?";  //问号?就是占位符号，来避免拼接
         pstmt = conn.prepareStatement(SQL);
         pstmt.setString(1,  name); //把占位符填上
